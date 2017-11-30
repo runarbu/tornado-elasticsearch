@@ -56,15 +56,14 @@ class AsyncHttpConnection(Connection):
     _auth_user = None
     _auth_password = None
     _user_agent = 'tornado_elasticsearch %s/Tornado %s' % (__version__, version)
-    ssl_transport_schema = 'https'
 
     def __init__(self, host='localhost', port=9200, http_auth=None,
                  use_ssl=False, request_timeout=None, max_clients=10, **kwargs):
         super(AsyncHttpConnection, self).__init__(host=host, port=port,
                                                   **kwargs)
         self._assign_auth_values(http_auth)
-        self.base_url = '%s://%s:%s%s' % (self.ssl_transport_schema if use_ssl
-                                          else self.transport_schema,
+        self.base_url = '%s://%s:%s%s' % ('https' if use_ssl
+                                          else 'http',
                                           host, port, self.url_prefix)
         httpclient.AsyncHTTPClient.configure(None, max_clients=max_clients)
         self._client = httpclient.AsyncHTTPClient()
